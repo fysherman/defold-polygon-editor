@@ -17,9 +17,7 @@ It helps you draw polygons directly over an image, and export them in the `.conv
 
 ---
 
-## 📦 Getting Started
-
-Just open the `polygon-defold.html` file in your browser — no build steps required.
+## 📦 [Getting Started](https://fysherman.github.io/defold-polygon-editor/)
 
 ---
 
