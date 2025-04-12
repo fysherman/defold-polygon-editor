@@ -139,11 +139,6 @@ document.querySelector("#exportBtn")?.addEventListener("click", function () {
 });
 
 document.querySelector("#downloadBtn")?.addEventListener("click", function () {
-    if (points.length < 3) {
-        alert("Need at least 3 points to make a polygon.");
-        return;
-    }
-
     const text = exportConvexShape();
     const blob = new Blob([text], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
@@ -163,48 +158,157 @@ function exportConvexShape() {
     }
 
     let text = "shape_type: TYPE_HULL\n";
-    for (const p of points) {
-        text += `data: ${p.x.toFixed(3)}\n`;
-        text += `data: ${p.y.toFixed(3)}\n`;
+    let ordered = [...points].reverse();
+
+    // if (polygonArea(ordered) < 0) {
+    //     ordered.reverse();
+    // }
+
+    // for (const p of ordered) {
+    //     text += `data: ${p.x.toFixed(3)}\n`;
+    //     text += `data: ${p.y.toFixed(3)}\n`;
+    //     text += `data: 0.0\n`;
+    // }
+
+    if (!image) return "";
+
+    for (const p of ordered) {
+        text += `data: ${(p.x - image.width / 2).toFixed(3)}\n`;
+        text += `data: ${(image.height / 2 - p.y).toFixed(3)}\n`;
         text += `data: 0.0\n`;
     }
+
     return text;
 }
 
+// function draw() {
+//     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+//     ctx.save();
+//     ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+
+//     if (image) {
+//         // ctx.drawImage(image, 0, 0);
+//         ctx.drawImage(
+//             image,
+//             0,
+//             0,
+//             // image.width,
+//             // image.height,
+//             // offsetX,
+//             // offsetY,
+//             // image.width * scale,
+//             // image.height * scale
+//         );
+
+//         // Calculate the center of the image after applying the zoom and pan
+//         const centerX = offsetX + (image.width * scale) / 2;
+//         const centerY = offsetY + (image.height * scale) / 2;
+
+//         ctx.strokeStyle = "rgba(0, 255, 255, 0.5)";
+//         ctx.lineWidth = 1;
+
+//         // Vertical line (center X of the canvas)
+//         ctx.beginPath();
+//         ctx.moveTo(centerX, 0);
+//         ctx.lineTo(centerX, canvas.height);
+//         ctx.stroke();
+
+//         // Horizontal line (center Y of the canvas)
+//         ctx.beginPath();
+//         ctx.moveTo(0, centerY);
+//         ctx.lineTo(canvas.width, centerY);
+//         ctx.stroke();
+//     }
+
+//     if (points.length > 1) {
+//         ctx.beginPath();
+//         ctx.moveTo(points[0].x, points[0].y);
+//         for (let i = 1; i < points.length; i++) {
+//             ctx.lineTo(points[i].x, points[i].y);
+//         }
+//         ctx.closePath();
+//         ctx.strokeStyle = "#00f";
+//         ctx.lineWidth = 2 / scale;
+//         ctx.stroke();
+//         ctx.fillStyle = "rgba(0, 0, 255, 0.1)";
+//         ctx.fill();
+//     }
+
+//     for (let p of points) {
+//         ctx.beginPath();
+//         ctx.arc(p.x, p.y, 6 / scale, 0, Math.PI * 2);
+//         ctx.fillStyle = "#f00";
+//         ctx.fill();
+//         ctx.lineWidth = 1 / scale;
+//         ctx.strokeStyle = "#000";
+//         ctx.stroke();
+//     }
+
+//     ctx.restore();
+// }
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    ctx.save();
-    ctx.setTransform(scale, 0, 0, scale, offsetX, offsetY);
+    if (image) {
+        ctx.drawImage(
+            image,
+            0, 0, image.width, image.height,
+            offsetX, offsetY,
+            image.width * scale,
+            image.height * scale
+        );
 
-    if (image) ctx.drawImage(image, 0, 0);
+        const centerX = offsetX + (image.width * scale) / 2;
+        const centerY = offsetY + (image.height * scale) / 2;
 
+        // Cross lines go across full canvas, aligned to image center
+        ctx.strokeStyle = "rgba(0, 255, 255, 0.5)";
+        ctx.lineWidth = 2;
+
+        ctx.beginPath();
+        ctx.moveTo(centerX, 0);
+        ctx.lineTo(centerX, canvas.height);
+        ctx.stroke();
+
+        ctx.beginPath();
+        ctx.moveTo(0, centerY);
+        ctx.lineTo(canvas.width, centerY);
+        ctx.stroke();
+    }
+
+    // Draw polygon in screen coords
     if (points.length > 1) {
         ctx.beginPath();
-        ctx.moveTo(points[0].x, points[0].y);
+        const p0 = toScreenCoords(points[0].x, points[0].y);
+        ctx.moveTo(p0.x, p0.y);
+
         for (let i = 1; i < points.length; i++) {
-            ctx.lineTo(points[i].x, points[i].y);
+            const pi = toScreenCoords(points[i].x, points[i].y);
+            ctx.lineTo(pi.x, pi.y);
         }
         ctx.closePath();
+
+        ctx.lineWidth = 2; // constant thickness
         ctx.strokeStyle = "#00f";
-        ctx.lineWidth = 2 / scale;
         ctx.stroke();
         ctx.fillStyle = "rgba(0, 0, 255, 0.1)";
         ctx.fill();
     }
 
+    // Draw points in screen coords
     for (let p of points) {
+        const sp = toScreenCoords(p.x, p.y);
         ctx.beginPath();
-        ctx.arc(p.x, p.y, 6 / scale, 0, Math.PI * 2);
+        ctx.arc(sp.x, sp.y, 6, 0, Math.PI * 2); // constant 6px radius
         ctx.fillStyle = "#f00";
         ctx.fill();
-        ctx.lineWidth = 1 / scale;
+        ctx.lineWidth = 1;
         ctx.strokeStyle = "#000";
         ctx.stroke();
     }
-
-    ctx.restore();
 }
+
 
 function distance(p1: Point, p2: Point) {
     return Math.sqrt((p1.x - p2.x) ** 2 + (p1.y - p2.y) ** 2);
