@@ -17,7 +17,7 @@ It helps you draw polygons directly over an image, and export them in the `.conv
 
 ---
 
-## 📦 [Getting Started](https://fysherman.github.io/defold-polygon-editor/)
+## 📦 [Getting Started](https://fysherman.github.io/defold-convex-editor/)
 
 ---
 
