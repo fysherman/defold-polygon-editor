@@ -1,31 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Defold Polygon Editor</title>
-        <link href="/src/style.css" rel="stylesheet" />
-    </head>
-    <body class="p-4">
-        <div class="mx-auto flex flex-col items-center gap-4">
-            <h1 class="text-xl font-bold mb-4">Polygon Creator for Defold</h1>
-            <ul>
-                <li><b>Left click</b>: Add point</li>
-                <li><b>Right click</b>: Remove point</li>
-            </ul>
-            <input type="file" id="imageUpload" accept="image/*" class="file-input" />
-            <div id="controls">
-                <button id="exportBtn" class="btn btn-neutral">Export as .convexshape Format</button>
-                <button id="downloadBtn" class="btn btn-neutral">Download .convexshape</button>
-                <button id="clearBtn" class="btn btn-neutral">Clear Points</button>
-            </div>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Defold Polygon Editor</title>
+    <link href="/src/style.css" rel="stylesheet" />
+  </head>
+  <body class="p-4 pb-20">
+    <div class="mx-auto flex flex-col items-center gap-4">
+      <h1 class="text-3xl font-bold mb-4 text-white bg-emerald-800">Polygon Creator for Defold</h1>
+      <input type="file" id="imageUpload" accept="image/*" class="file-input" />
+      <ul>
+        <li><b>Left click</b>: Add point</li>
+        <li><b>Right click</b>: Remove point</li>
+      </ul>
+      <div id="controls">
+        <button id="clearBtn" class="btn">Clear Points</button>
+        <button id="exportBtn" class="btn">
+          Export
+        </button>
+        <button id="downloadBtn" class="btn btn-neutral">
+          Download .convexshape
+        </button>
+      </div>
 
-            <canvas id="canvas" width="800" height="600" class="border border-gray-200"></canvas>
+      <canvas
+        id="canvas"
+        width="800"
+        height="600"
+        class="border border-gray-200 bg-gray-800"
+      ></canvas>
 
-            <textarea id="output" rows="15" cols="80" readonly></textarea>
-        </div>
-        <script type="module" src="/src/main.ts"></script>
-    </body>
+      <textarea id="output" class="textarea w-[800px]" rows="10" readonly></textarea>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
 </html>
-

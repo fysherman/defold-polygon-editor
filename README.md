@@ -1,4 +1,4 @@
-# 🧩 Polygon Creator for Defold
+# 🧩 Convexshape Creator for Defold
 
 This is a simple tool that allows you to create convex polygon shapes for [Defold Engine](https://defold.com/).  
 It helps you draw polygons directly over an image, and export them in the `.convexshape` format that Defold uses.
